@@ -1,18 +1,18 @@
 import sys
 import numpy as np
 import cv2
-import ndvi
 
+from views import ndvi_ui
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QImage, QPixmap
 
-class MainNDVI(ndvi.Ui_MainWindow, QtWidgets.QMainWindow):
+class MainNDVI(ndvi_ui.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
         super(MainNDVI, self).__init__()
-        loadUi('ndvi.ui', self)
+        loadUi('views/ndvi_ui.ui', self)
         self.loadImgBtn.clicked.connect(self.setImage)
 
     # Method to load image
