@@ -4,28 +4,50 @@ import cv2
 
 from views import ndvi_ui
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtCore import pyqtSlot, QPoint, Qt
+from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog
 from PyQt5.uic import loadUi
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen
 
 class MainNDVI(ndvi_ui.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
         super(MainNDVI, self).__init__()
         loadUi('views/ndvi_ui.ui', self)
         self.loadImgBtn.clicked.connect(self.setImage)
+        self.lastPoint = QPoint()
+
 
     # Method to load image
     def setImage(self):
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp)")
+        fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp)")
         if fileName:
-            image = cv2.imread(fileName)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            height, width, channel = image.shape
-            step = channel * width
-            # create QImage from image
-            qImg = QImage(image.data, width, height, step, QImage.Format_RGB888)
-            self.imageLbl.setPixmap(QPixmap.fromImage(qImg))
+            pixmap = QPixmap(fileName)
+            pixmap = pixmap.scaled(self.imageLbl.width(), self.imageLbl.height(), QtCore.Qt.KeepAspectRatio)
+            self.drawing = False
+            self.lastPoint = QPoint(self.imageLbl.pos())
+            self.imageLbl.setPixmap(pixmap)
+            self.imageLbl.setAlignment(QtCore.Qt.AlignCenter)
+            self.fileName = fileName
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.drawing = True
+            self.lastPoint = event.pos()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() and Qt.LeftButton and self.drawing:
+            painter = QPainter(self.imageLbl.pixmap())
+            painter.setPen(QPen(Qt.blue, 3, Qt.SolidLine))
+            painter.drawLine(self.lastPoint, event.pos())
+            self.lastPoint = event.pos()
+            self.imageLbl.update()
+
+    def mouseReleaseEvent(self, event):
+        if event.button == Qt.LeftButton:
+            self.drawing = False
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
