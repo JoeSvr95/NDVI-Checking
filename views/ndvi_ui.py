@@ -72,6 +72,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.imageLbl = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.imageLbl.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.imageLbl.setFrameShape(QtWidgets.QFrame.Box)
         self.imageLbl.setText("")
         self.imageLbl.setObjectName("imageLbl")

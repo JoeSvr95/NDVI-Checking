@@ -150,6 +150,9 @@
              </property>
              <item>
               <widget class="QLabel" name="imageLbl">
+               <property name="cursor">
+                <cursorShape>CrossCursor</cursorShape>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::Box</enum>
                </property>
