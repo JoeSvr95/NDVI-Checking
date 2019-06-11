@@ -129,7 +129,7 @@
               <x>0</x>
               <y>0</y>
               <width>1057</width>
-              <height>682</height>
+              <height>662</height>
              </rect>
             </property>
             <property name="layoutDirection">
@@ -151,7 +151,7 @@
              <item>
               <widget class="QLabel" name="imageLbl">
                <property name="cursor">
-                <cursorShape>CrossCursor</cursorShape>
+                <cursorShape>ArrowCursor</cursorShape>
                </property>
                <property name="frameShape">
                 <enum>QFrame::Box</enum>
@@ -172,6 +172,7 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <resources/>
  <connections/>
