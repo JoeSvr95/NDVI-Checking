@@ -24,6 +24,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.imageLbl.mousePressEvent = self.selectRegion
         self.imageLbl.mouseMoveEvent = self.drawingSelection
         self.imageLbl.mouseReleaseEvent = self.completeROI
+        self.opencvBtn.clicked.connect(self.opencvFunc)
 
     # Método para colocar una imágen
     def setImage(self):
@@ -72,6 +73,11 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
             painter.setPen(QPen(Qt.blue, 3, Qt.SolidLine))
             painter.drawLine(self.firstPoint, self.lastPoint)
             self.imageLbl.update()
+
+    def opencvFunc(self):
+        image = self.imageLbl.pixmap
+        image_rgb = QImage.toImageFormat(image)
+        cv2.imread(image_rgb)
 
 
 if __name__ == "__main__":

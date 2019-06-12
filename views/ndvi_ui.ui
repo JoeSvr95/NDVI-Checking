@@ -94,6 +94,19 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="opencvBtn">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>OpenCV</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -128,8 +141,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>1057</width>
-              <height>662</height>
+              <width>1053</width>
+              <height>652</height>
              </rect>
             </property>
             <property name="layoutDirection">
