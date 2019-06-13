@@ -19,26 +19,22 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.drawing = False
         self.statusbar = QStatusBar()
         self.setStatusBar(self.statusBar)
-        self.loadImgBtn.clicked.connect(self.setImage)
-        self.selectBtn.clicked.connect(self.startSelectROI)
-        self.imageLbl.mousePressEvent = self.selectRegion
-        self.imageLbl.mouseMoveEvent = self.drawingSelection
-        self.imageLbl.mouseReleaseEvent = self.completeROI
-        self.opencvBtn.clicked.connect(self.opencvFunc)
+        self.loadImgBtn.clicked.connect(self.loadImage)
+        #self.selectBtn.clicked.connect(self.startSelectROI)
+        #self.opencvBtn.clicked.connect(self.opencvFunc)
 
     # Método para colocar una imágen
-    def setImage(self):
-        fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp)")
+    
+    def loadImage(self):
+        fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.tif)")
         if fileName:
             pixmap = QPixmap(fileName)
-            #pixmap = pixmap.scaled(self.imageLbl.width(), self.imageLbl.height(), QtCore.Qt.KeepAspectRatio)
+            #pixmap = pixmap.scaled(self.graphicsView.width(), self.graphicsView.height(), QtCore.Qt.KeepAspectRatio)
             size = pixmap.size()
-            self.drawing = False
-            self.fileName = fileName
-            self.imageLbl.setPixmap(pixmap)
-            self.imageLbl.setAlignment(QtCore.Qt.AlignCenter)
+            self.graphicsView.setImage(pixmap)
             self.statusBar.showMessage("Resolución: " + str(size.width()) + "x" + str(size.height()))
-
+    
+    '''
     # Método para habilitar la opción de selección
     def startSelectROI(self):
         self.imageLbl.paintEvent = self.selecROI
@@ -78,7 +74,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         image = self.imageLbl.pixmap
         image_rgb = QImage.toImageFormat(image)
         cv2.imread(image_rgb)
-
+    '''
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
