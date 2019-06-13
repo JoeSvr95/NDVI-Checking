@@ -97,4 +97,4 @@ class Ui_MainWindow(object):
         self.selectBtn.setText(_translate("MainWindow", "Seleccionar"))
         self.opencvBtn.setText(_translate("MainWindow", "OpenCV"))
 
-from .classes.custom_classes import ImageViewer
+from ndvi_lib.ndvi_class import ImageViewer

@@ -172,7 +172,7 @@
   <customwidget>
    <class>ImageViewer</class>
    <extends>QGraphicsView</extends>
-   <header>.classes.custom_classes</header>
+   <header>ndvi_lib.ndvi_class</header>
   </customwidget>
  </customwidgets>
  <resources/>
