@@ -19,25 +19,33 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.drawing = False
         self.statusbar = QStatusBar()
         self.setStatusBar(self.statusBar)
-        self.loadImgBtn.clicked.connect(self.loadImage)
-        #self.selectBtn.clicked.connect(self.selectROI)
+        self.loadRGBBtn.clicked.connect(self.loadRGBImage)
+        self.loadNDVIBtn.clicked.connect(self.loadNDVIImage)
+        self.selectBtn.clicked.connect(self.selectROI)
         #self.opencvBtn.clicked.connect(self.opencvFunc)
 
     # Método para colocar una imágen
-    
-    def loadImage(self):
-        fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.tif)")
+    def loadRGBImage(self):
+        fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.tiff)")
         if fileName:
             pixmap = QPixmap(fileName)
-            #pixmap = pixmap.scaled(self.graphicsView.width(), self.graphicsView.height(), QtCore.Qt.KeepAspectRatio)
+            #pixmap = pixmap.scaled(self.ndvi_view.width(), self.ndvi_view.height(), QtCore.Qt.KeepAspectRatio)
             size = pixmap.size()
-            self.graphicsView.setImage(pixmap)
+            self.rgb_view.setImage(pixmap)
             self.statusBar.showMessage("Resolución: " + str(size.width()) + "x" + str(size.height()))
     
-    
+    def loadNDVIImage(self):
+        fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.tiff)")
+        if fileName:
+            pixmap = QPixmap(fileName)
+            #pixmap = pixmap.scaled(self.ndvi_view.width(), self.ndvi_view.height(), QtCore.Qt.KeepAspectRatio)
+            size = pixmap.size()
+            self.ndvi_view.setImage(pixmap)
+            self.statusBar.showMessage("Resolución: " + str(size.width()) + "x" + str(size.height()))
+
     # Método para habilitar la opción de selección
     def selectROI(self):
-        self.graphicsView.startSelectROI()
+        self.rgb_view.startSelectROI()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

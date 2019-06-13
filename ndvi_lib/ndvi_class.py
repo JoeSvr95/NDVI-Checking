@@ -1,8 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtCore import QPoint, Qt, QLineF
+from PyQt5.QtGui import QPainterPath, QPen
 
 class ImageViewer(QtWidgets.QGraphicsView):
+    start = None
+    end = None
+    item = None
+    path = None
+
     def __init__(self, parent):
         super(ImageViewer, self).__init__(parent)
         # Instance variables for basic image control
@@ -13,8 +18,9 @@ class ImageViewer(QtWidgets.QGraphicsView):
         self._scene.addItem(self.image)
         self.setScene(self._scene)
         # Instance variables for selection
-        self.firstPoint = QPoint()
-        self.lastPoint = QPoint()
+        self.path = QPainterPath()
+        self.item = GraphicPathItem()
+        self.scene().addItem(self.item)
         self.select = False
         self.drawing = False
 
@@ -60,35 +66,29 @@ class ImageViewer(QtWidgets.QGraphicsView):
                 self.fitInView()
             else:
                 self.zoom = 0
-    '''    
+    
     # Crea el objeto painter e inicia bandera para seleccionar
     def startSelectROI(self):
+        self.setDragMode(QtWidgets.QGraphicsView.NoDrag)
         self.setCursor(Qt.CrossCursor)
         self.select = True
 
-    # Al hacer click se empieza a dibujar
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton and self.select:
-            self.drawing = True
-            self.lastPoint = event.pos()
-            self.firstPoint = event.pos()
+        if self.select:
+            self.start = self.mapToScene(event.pos())
+            self.path.moveTo(self.start)
 
-    # Al mover el mouse se dibuja el paso del mouse
     def mouseMoveEvent(self, event):
-        if event.button() and Qt.LeftButton and self.drawing:
-            painter = QPainter(self.viewport.pixmap())
-            painter.setPen(QPen(Qt.blue, 3, Qt.SolidLine))
-            painter.drawLine(self.lastPoint, event.pos())
-            self.lastPoint = event.pos()
-            self.image.update()
+        if self.select:
+            self.end = self.mapToScene(event.pos())
+            self.path.lineTo(self.end)
+            self.start = self.end
+            self.item.setPath(self.path)
 
-    # Si el usuario no ha completado una figura cerrada
-    # Esta función completa la figura
-    def mouseReleaseEvent(self, event):
-        if self.drawing:
-            painter = QPainter(self.image.pixmap())
-            painter.setPen(QPen(Qt.blue, 3, Qt.SolidLine))
-            painter.drawLine(self.firstPoint, self.lastPoint)
-            self.drawing = False
-            self.image.update()
-    '''
+class GraphicPathItem(QtWidgets.QGraphicsPathItem):
+    def __init__(self):
+        super(GraphicPathItem, self).__init__()
+        pen = QPen()
+        pen.setColor(Qt.red)
+        pen.setWidth(3)
+        self.setPen(pen)

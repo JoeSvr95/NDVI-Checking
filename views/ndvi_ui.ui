@@ -69,7 +69,20 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="loadImgBtn">
+          <widget class="QPushButton" name="loadRGBBtn">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Cargar RGB</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="loadNDVIBtn">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -77,7 +90,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Cargar Imagen</string>
+            <string>Cargar NDVI</string>
            </property>
           </widget>
          </item>
@@ -132,7 +145,7 @@
           <number>0</number>
          </property>
          <item row="0" column="0">
-          <widget class="ImageViewer" name="graphicsView">
+          <widget class="ImageViewer" name="rgb_view">
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -156,6 +169,25 @@
            </property>
            <property name="resizeAnchor">
             <enum>QGraphicsView::AnchorUnderMouse</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="ImageViewer" name="ndvi_view">
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="backgroundBrush">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>30</red>
+              <green>30</green>
+              <blue>0</blue>
+             </color>
+            </brush>
            </property>
           </widget>
          </item>
