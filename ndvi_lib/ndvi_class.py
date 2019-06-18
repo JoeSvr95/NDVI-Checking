@@ -57,6 +57,7 @@ class RGBViewer(QtWidgets.QGraphicsView):
                 self.zoom = 0
 
 class NDVIViewer(RGBViewer):
+
     start = None
     end = None
     item = None
@@ -71,14 +72,21 @@ class NDVIViewer(RGBViewer):
         self.drawing = False
 
     def startSelectROI(self):
-        self.setDragMode(QtWidgets.QGraphicsView.NoDrag)
-        self.setCursor(Qt.CrossCursor)
-        self.select = True
+        if self.select:
+            self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
+            self.setCursor(Qt.OpenHandCursor)
+            self.select = False
+        else:
+            self.setDragMode(QtWidgets.QGraphicsView.NoDrag)
+            self.setCursor(Qt.CrossCursor)
+            self.select = True
 
     def mousePressEvent(self, event):
         if self.select:
             self.start = self.mapToScene(event.pos())
             self.path.moveTo(self.start)
+        else:
+            super(NDVIViewer, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         if self.select:
@@ -86,6 +94,8 @@ class NDVIViewer(RGBViewer):
             self.path.lineTo(self.end)
             self.start = self.end
             self.item.setPath(self.path)
+        else:
+            super(NDVIViewer, self).mouseMoveEvent(event)
 
 
 class GraphicPathItem(QtWidgets.QGraphicsPathItem):

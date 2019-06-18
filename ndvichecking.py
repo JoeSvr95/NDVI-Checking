@@ -39,6 +39,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
             self.ndvi_view.setImage(pixmap)
             self.ndvi_info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + str(file_info.size()))
 
+
     # Método para habilitar la opción de selección
     def selectROI(self):
         self.ndvi_view.startSelectROI()
