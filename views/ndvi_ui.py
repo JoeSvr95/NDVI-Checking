@@ -96,6 +96,8 @@ class Ui_MainWindow(object):
         brush = QtGui.QBrush(QtGui.QColor(30, 30, 30))
         brush.setStyle(QtCore.Qt.SolidPattern)
         self.ndvi_view.setBackgroundBrush(brush)
+        self.ndvi_view.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
+        self.ndvi_view.setResizeAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
         self.ndvi_view.setObjectName("ndvi_view")
         self.img_ndvi_layout.addWidget(self.ndvi_view)
         self.ndvi_info = QtWidgets.QLabel(self.centralwidget)

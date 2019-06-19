@@ -39,6 +39,11 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
             self.ndvi_view.setImage(pixmap)
             self.ndvi_info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + str(file_info.size()))
 
+    # Función para hacer zoom en las dos imágenes al mismo tiempo
+    def wheelEvent(self, event):
+        self.ndvi_view.wheelEvent(event)
+        self.rgb_view.wheelEvent(event)
+
 
     # Método para habilitar la opción de selección
     def selectROI(self):
