@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF
-from PyQt5.QtGui import QPainterPath, QPen
+from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap
 
 '''
     Clase que hereda de QGraphicsView
@@ -124,7 +124,6 @@ class NDVIViewer(RGBViewer):
         else:
             super(NDVIViewer, self).mouseReleaseEvent(event)
 
-# Clase para definir las características de la línea de dibujo
 class GraphicPathItem(QtWidgets.QGraphicsPathItem):
     def __init__(self):
         super(GraphicPathItem, self).__init__()

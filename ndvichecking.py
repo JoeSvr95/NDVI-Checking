@@ -16,7 +16,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.loadRGBBtn.clicked.connect(self.loadRGBImage)
         self.loadNDVIBtn.clicked.connect(self.loadNDVIImage)
         self.selectBtn.clicked.connect(self.selectROI)
-        #self.opencvBtn.clicked.connect(self.opencvFunc)
+        self.opencvBtn.clicked.connect(self.opencvFunc)
 
     # Método para colocar una imágen
     def loadRGBImage(self):
@@ -44,10 +44,29 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.ndvi_view.wheelEvent(event)
         self.rgb_view.wheelEvent(event)
 
-
     # Método para habilitar la opción de selección
     def selectROI(self):
         self.ndvi_view.startSelectROI()
+
+    def opencvFunc(self):
+        area = self.ndvi_view._scene.sceneRect()
+
+        image = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
+        painter = QPainter(image)
+
+        self.ndvi_view._scene.render(painter, area)
+        painter.end()
+
+        image = image.convertToFormat(QtGui.QImage.Format.Format_RGB32)
+
+        width = image.width()
+        height = image.height()
+
+        ptr = image.bits()
+        ptr.setsize(height * width * 4)
+        arr = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
+
+        cv2.imshow('mascara', arr)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
