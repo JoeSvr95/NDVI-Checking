@@ -51,22 +51,41 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
     def opencvFunc(self):
         area = self.ndvi_view._scene.sceneRect()
 
-        image = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
-        painter = QPainter(image)
+        #Obtener imagen de la escenea en QGraphicsView
+        scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
+        painter = QPainter(scene)
 
         self.ndvi_view._scene.render(painter, area)
         painter.end()
+        
+        scene = scene.convertToFormat(QtGui.QImage.Format.Format_RGB32)
 
-        image = image.convertToFormat(QtGui.QImage.Format.Format_RGB32)
+        width = scene.width()
+        height = scene.height()
 
-        width = image.width()
-        height = image.height()
-
-        ptr = image.bits()
+        ptr = scene.bits()
         ptr.setsize(height * width * 4)
-        arr = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
 
-        cv2.imshow('mascara', arr)
+        # Escena convertida en imágen
+        sceneImage = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
+
+        hsv = cv2.cvtColor(sceneImage, cv2.COLOR_BGR2HSV)
+
+        lower_red = np.array([0,50,50])
+        upper_red = np.array([10,255,255])
+        selection = cv2.inRange(hsv, lower_red, upper_red)
+
+        h, w = selection.shape[:2]
+        floodMask = np.zeros((h+2, w+2), np.uint8)
+
+        cv2.floodFill(selection, floodMask, (0,0), 255)
+        mask = cv2.bitwise_not(selection)
+
+        pixels = cv2.bitwise_and(sceneImage, sceneImage, mask=mask)
+        print(pixels)
+
+        cv2.imshow('mask', mask)
+        cv2.imshow('pixeles', pixels)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
