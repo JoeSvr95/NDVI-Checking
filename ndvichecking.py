@@ -49,9 +49,8 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.ndvi_view.startSelectROI()
 
     def opencvFunc(self):
-        area = self.ndvi_view._scene.sceneRect()
-
         #Obtener imagen de la escenea en QGraphicsView
+        area = self.ndvi_view._scene.sceneRect()
         scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
         painter = QPainter(scene)
 
@@ -70,7 +69,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         sceneImage = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
 
         hsv = cv2.cvtColor(sceneImage, cv2.COLOR_BGR2HSV)
-
+        
         lower_red = np.array([0,50,50])
         upper_red = np.array([10,255,255])
         selection = cv2.inRange(hsv, lower_red, upper_red)
@@ -82,10 +81,12 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         mask = cv2.bitwise_not(selection)
 
         pixels = cv2.bitwise_and(sceneImage, sceneImage, mask=mask)
-        print(pixels)
+        x,y,w,h = cv2.boundingRect(mask)
 
-        cv2.imshow('mask', mask)
-        cv2.imshow('pixeles', pixels)
+        pixels = pixels[y:y+h, x:x+w]
+
+        cv2.imshow('pixels', pixels)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
