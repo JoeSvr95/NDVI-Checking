@@ -4,6 +4,7 @@ import cv2
 import data.mongo_setup as mongo_setup
 
 from views.ndvi_ui import Ui_MainWindow
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot, QPoint, Qt, QFileInfo
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog, QFileDialog, QStatusBar
@@ -51,12 +52,14 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
     # Método para habilitar la opción de selección
     def selectROI(self):
         self.ndvi_view.startSelectROI()
+        '''
         if (self.ndvi_view.select):    
             self.loadNDVIBtn.setEnabled(False)
             self.opencvBtn.setEnabled(False)
         else:
             self.loadNDVIBtn.setEnabled(True)
             self.opencvBtn.setEnabled(True)
+        '''
 
     def opencvFunc(self):
         #Obtener imagen de la escenea en QGraphicsView
