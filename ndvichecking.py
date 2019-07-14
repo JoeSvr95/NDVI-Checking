@@ -49,18 +49,11 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.ndvi_view.wheelEvent(event)
         self.rgb_view.wheelEvent(event)
 
-    # Método para habilitar la opción de selección
     def selectROI(self):
+        self.selectBtn.setDown(True)
         self.ndvi_view.startSelectROI()
-        '''
-        if (self.ndvi_view.select):    
-            self.loadNDVIBtn.setEnabled(False)
-            self.opencvBtn.setEnabled(False)
-        else:
-            self.loadNDVIBtn.setEnabled(True)
-            self.opencvBtn.setEnabled(True)
-        '''
 
+    # Función para poder procesar la imagen
     def opencvFunc(self):
         #Obtener imagen de la escenea en QGraphicsView
         area = self.ndvi_view._scene.sceneRect()

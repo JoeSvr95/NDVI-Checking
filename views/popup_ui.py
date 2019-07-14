@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\popup_ui.ui'
+# Form implementation generated from reading ui file 'popup_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
@@ -37,15 +37,15 @@ class Ui_Dialog(object):
         self.horizontalLayout_4.addWidget(self.lab_txt)
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
         self.verticalLayout.addLayout(self.verticalLayout_2)
-        self.btnOptions = QtWidgets.QDialogButtonBox(Dialog)
-        self.btnOptions.setOrientation(QtCore.Qt.Horizontal)
-        self.btnOptions.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
-        self.btnOptions.setObjectName("btnOptions")
-        self.verticalLayout.addWidget(self.btnOptions)
+        self.dialogButtonBox = QtWidgets.QDialogButtonBox(Dialog)
+        self.dialogButtonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.dialogButtonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.dialogButtonBox.setObjectName("dialogButtonBox")
+        self.verticalLayout.addWidget(self.dialogButtonBox)
 
         self.retranslateUi(Dialog)
-        self.btnOptions.accepted.connect(Dialog.accept)
-        self.btnOptions.rejected.connect(Dialog.reject)
+        self.dialogButtonBox.accepted.connect(Dialog.accept)
+        self.dialogButtonBox.rejected.connect(Dialog.reject)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):

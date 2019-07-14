@@ -1,6 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QPoint, Qt, QLineF
+from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot
 from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap
+
+from views.popup_ui import Ui_Dialog
 
 '''
     Clase que hereda de QGraphicsView
@@ -84,6 +86,7 @@ class NDVIViewer(RGBViewer):
         self.scene().addItem(self.item)
         self.select = False
         self.drawing = False
+        self.ui = ValuesDialog()
 
     # Función para poder validar si se puede dibujar o no
     def startSelectROI(self):
@@ -119,8 +122,12 @@ class NDVIViewer(RGBViewer):
         if self.select:
             self.path.lineTo(self.start)
             self.item.setPath(self.path)
-            self.start = self.end
+            self.start = False
             self.drawing = False
+            self.select = False
+            self.ui.exec_()
+            self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag) 
+            self.setCursor(Qt.OpenHandCursor)
         else:
             super(NDVIViewer, self).mouseReleaseEvent(event)
 
@@ -131,3 +138,26 @@ class GraphicPathItem(QtWidgets.QGraphicsPathItem):
         pen.setColor(Qt.red)
         pen.setWidth(5)
         self.setPen(pen)
+
+
+class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
+    def __init__(self):
+        super(ValuesDialog, self).__init__()
+        self.setupUi(self)
+
+    @pyqtSlot()
+    def accept(self):
+        spad = self.spad_txt.text()
+        lab = self.lab_txt.text()
+        # TODO
+        print("insert to database spad: " + spad + ", lab: " + lab)
+        self.spad_txt.clear()
+        self.lab_txt.clear()
+        self.done(QtWidgets.QDialog.Accepted)
+
+    '''
+    @pyqtSlot()
+    def reject(self):
+        pass
+    '''
+
