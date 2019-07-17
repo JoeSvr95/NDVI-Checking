@@ -8,7 +8,6 @@ class Label(mongoengine.Document):
     NDVI = mongoengine.FloatField()
     SPAD = mongoengine.FloatField()
     LAB = mongoengine.FloatField()
-    pixels = mongoengine.EmbeddedDocumentListField(Pixels)
 
     meta = {
         'db_alias': 'core',

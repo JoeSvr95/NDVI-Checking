@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot
-from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap
+from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QIntValidator
 
 from views.popup_ui import Ui_Dialog
 
@@ -80,6 +80,7 @@ class NDVIViewer(RGBViewer):
     end = None # Fin de la línea
     item = None
     path = None
+    ndvi_filename = None
 
     def __init__(self, parent):
         super(NDVIViewer, self).__init__(parent)
@@ -127,6 +128,7 @@ class NDVIViewer(RGBViewer):
             self.start = False
             self.drawing = False
             self.select = False
+            self.ui.filename = self.ndvi_filename
             self.ui.exec_()
             self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag) 
             self.setCursor(Qt.OpenHandCursor)
@@ -143,17 +145,20 @@ class GraphicPathItem(QtWidgets.QGraphicsPathItem):
 
 
 class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
+    filename = None
+
     def __init__(self):
         super(ValuesDialog, self).__init__()
         self.setupUi(self)
+        self.validator = QIntValidator()
+        self.spad_txt.setValidator(self.validator)
+        self.lab_txt.setValidator(self.validator)
 
     @pyqtSlot()
     def accept(self):
         spad = float(self.spad_txt.text())
         lab = float(self.lab_txt.text())
-        # TODO
-        # print("insert to database spad: " + spad + ", lab: " + lab)
-        svc.create_ndvi(spad, lab)
+        svc.create_ndvi(self.filename ,spad, lab)
         self.spad_txt.clear()
         self.lab_txt.clear()
         self.done(QtWidgets.QDialog.Accepted)

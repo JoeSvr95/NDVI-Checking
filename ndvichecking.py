@@ -34,6 +34,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
     
     def loadNDVIImage(self):
         fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.tiff)")
+        ndvi_image = QFileInfo(fileName).fileName()
         if fileName:
             pixmap = QPixmap(fileName)
             file_info = QFileInfo(fileName)
@@ -41,6 +42,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
             size = pixmap.size()
             self.ndvi_view.setImage(pixmap)
             self.ndvi_info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + str(file_info.size()))
+            self.ndvi_view.ndvi_filename = ndvi_image
         self.selectBtn.setEnabled(True)
         self.opencvBtn.setEnabled(True)
 
