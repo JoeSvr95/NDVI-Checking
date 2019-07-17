@@ -4,6 +4,8 @@ from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap
 
 from views.popup_ui import Ui_Dialog
 
+import services.data_services as svc
+
 '''
     Clase que hereda de QGraphicsView
     Utilizada para mostar imagenes RGB y poder hacer manipulaciones básicas
@@ -147,10 +149,11 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
 
     @pyqtSlot()
     def accept(self):
-        spad = self.spad_txt.text()
-        lab = self.lab_txt.text()
+        spad = float(self.spad_txt.text())
+        lab = float(self.lab_txt.text())
         # TODO
-        print("insert to database spad: " + spad + ", lab: " + lab)
+        # print("insert to database spad: " + spad + ", lab: " + lab)
+        svc.create_ndvi(spad, lab)
         self.spad_txt.clear()
         self.lab_txt.clear()
         self.done(QtWidgets.QDialog.Accepted)
