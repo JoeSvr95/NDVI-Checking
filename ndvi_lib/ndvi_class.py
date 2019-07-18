@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot
 from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QIntValidator
+from PyQt5.QtWidgets import QMessageBox
 
 from views.popup_ui import Ui_Dialog
 
@@ -89,7 +90,7 @@ class NDVIViewer(RGBViewer):
         self.scene().addItem(self.item)
         self.select = False
         self.drawing = False
-        self.ui = ValuesDialog()
+        self.ui = ValuesDialog(self)
 
     # Función para poder validar si se puede dibujar o no
     def startSelectROI(self):
@@ -135,6 +136,12 @@ class NDVIViewer(RGBViewer):
         else:
             super(NDVIViewer, self).mouseReleaseEvent(event)
 
+    def deleteLastSelection(self):
+        self._scene.removeItem(self.item)
+        self.path = QPainterPath()
+        self.item = GraphicPathItem()
+        self.scene().addItem(self.item)
+
 class GraphicPathItem(QtWidgets.QGraphicsPathItem):
     def __init__(self):
         super(GraphicPathItem, self).__init__()
@@ -147,8 +154,9 @@ class GraphicPathItem(QtWidgets.QGraphicsPathItem):
 class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
     filename = None
 
-    def __init__(self):
-        super(ValuesDialog, self).__init__()
+    def __init__(self, parent):
+        super(ValuesDialog, self).__init__(parent)
+        self.parent = parent
         self.setupUi(self)
         self.validator = QIntValidator()
         self.spad_txt.setValidator(self.validator)
@@ -156,16 +164,25 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
 
     @pyqtSlot()
     def accept(self):
-        spad = float(self.spad_txt.text())
-        lab = float(self.lab_txt.text())
-        svc.create_ndvi(self.filename ,spad, lab)
+        spad_text = self.spad_txt.text()
+        lab_text = self.lab_txt.text()
+
+        if spad_text and lab_text:
+            # Guardando datos
+            spad = float(spad_text)
+            lab = float(lab_text)
+            svc.create_ndvi(self.filename ,spad, lab)
+            QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
+        else:
+            QMessageBox.warning(self, "Error", "No se pudo ingresar los datos", QMessageBox.Ok)
+            
         self.spad_txt.clear()
         self.lab_txt.clear()
         self.done(QtWidgets.QDialog.Accepted)
 
-    '''
     @pyqtSlot()
     def reject(self):
-        pass
-    '''
+        self.parent.deleteLastSelection()
+        self.done(QtWidgets.QDialog.Rejected)
+    
 
