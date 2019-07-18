@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot
 from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QIntValidator
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QGraphicsTextItem
 
 from views.popup_ui import Ui_Dialog
 
@@ -142,6 +142,7 @@ class NDVIViewer(RGBViewer):
         self.item = GraphicPathItem()
         self.scene().addItem(self.item)
 
+# Clase para definir el color de la selección
 class GraphicPathItem(QtWidgets.QGraphicsPathItem):
     def __init__(self):
         super(GraphicPathItem, self).__init__()
@@ -150,7 +151,7 @@ class GraphicPathItem(QtWidgets.QGraphicsPathItem):
         pen.setWidth(5)
         self.setPen(pen)
 
-
+# Clase del pop-up para ingresar valores
 class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
     filename = None
 
@@ -173,6 +174,11 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             lab = float(lab_text)
             svc.create_ndvi(self.filename ,spad, lab)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
+            # Añadiendo label en la selección
+            pos = self.parent.end
+            self.addLabel(self.spad_lbl.text(), spad_text, pos)
+            pos.setY(pos.y() + 20)
+            self.addLabel(self.lab_lbl.text(), lab_text, pos) 
         else:
             QMessageBox.warning(self, "Error", "No se pudo ingresar los datos", QMessageBox.Ok)
             
@@ -184,5 +190,11 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
     def reject(self):
         self.parent.deleteLastSelection()
         self.done(QtWidgets.QDialog.Rejected)
+
+    def addLabel(self, valueType, value, position):
+        label = QGraphicsTextItem()
+        label.setPlainText(valueType + value)
+        label.setPos(position)
+        self.parent.scene().addItem(label)
     
 
