@@ -50,6 +50,7 @@ class RGBViewer(QtWidgets.QGraphicsView):
             self.empty = False
             self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
             self.image.setPixmap(pixmap)
+            self.fitInView()
         # Si no tiene imagen se deshabilita la opción de arrastrar
         else:
             self.empty = True
@@ -142,14 +143,24 @@ class NDVIViewer(RGBViewer):
         self.item = GraphicPathItem()
         self.scene().addItem(self.item)
 
+    def newItem(self):
+        self.path = QPainterPath()
+        self.item = GraphicPathItem()
+        self.scene().addItem(self.item)
+
 # Clase para definir el color de la selección
 class GraphicPathItem(QtWidgets.QGraphicsPathItem):
     def __init__(self):
         super(GraphicPathItem, self).__init__()
-        pen = QPen()
-        pen.setColor(Qt.red)
-        pen.setWidth(5)
-        self.setPen(pen)
+        self.pen = QPen()
+        self.pen.setColor(Qt.red)
+        self.pen.setWidth(5)
+        self.setPen(self.pen)
+
+    def setColor(self, color):
+        self.pen.setColor(color)
+        self.setPen(self.pen)
+        self.update()
 
 # Clase del pop-up para ingresar valores
 class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
@@ -172,13 +183,16 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             # Guardando datos
             spad = float(spad_text)
             lab = float(lab_text)
-            svc.create_ndvi(self.filename ,spad, lab)
+            svc.create_ndvi(self.filename, spad, lab)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
             # Añadiendo label en la selección
             pos = self.parent.end
             self.addLabel(self.spad_lbl.text(), spad_text, pos)
             pos.setY(pos.y() + 20)
-            self.addLabel(self.lab_lbl.text(), lab_text, pos) 
+            self.addLabel(self.lab_lbl.text(), lab_text, pos)
+            # Cambiando el color de la selección
+            self.parent.item.setColor(Qt.green)
+            self.parent.newItem()
         else:
             QMessageBox.warning(self, "Error", "No se pudo ingresar los datos", QMessageBox.Ok)
             
