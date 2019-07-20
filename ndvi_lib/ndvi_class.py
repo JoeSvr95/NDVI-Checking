@@ -1,11 +1,13 @@
+import numpy as np
+import cv2
+import services.data_services as svc
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot
 from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QIntValidator
 from PyQt5.QtWidgets import QMessageBox, QGraphicsTextItem
 
 from views.popup_ui import Ui_Dialog
-
-import services.data_services as svc
 
 '''
     Clase que hereda de QGraphicsView
@@ -130,7 +132,6 @@ class NDVIViewer(RGBViewer):
             self.start = False
             self.drawing = False
             self.select = False
-            self.ui.filename = self.ndvi_filename
             self.ui.exec_()
             self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag) 
             self.setCursor(Qt.OpenHandCursor)
@@ -148,6 +149,78 @@ class NDVIViewer(RGBViewer):
         self.item = GraphicPathItem()
         self.scene().addItem(self.item)
 
+    # Función para poder procesar la imagen y obtener los pixeles del ROI
+    def cropROI(self):
+        '''
+        #Obtener imagen de la escenea en QGraphicsView
+        area = self._scene.sceneRect()
+        scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
+        painter = QPainter(scene)
+
+        self._scene.render(painter, area)
+        painter.end()
+        
+        scene = scene.convertToFormat(QtGui.QImage.Format.Format_RGB32)
+
+        width = scene.width()
+        height = scene.height()
+
+        ptr = scene.bits()
+        ptr.setsize(height * width * 4)
+
+        # Escena convertida en imágen
+        sceneImage = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
+        '''
+
+        sceneImg = self.getSceneImage()
+        cv2.imshow("sceneimage", sceneImg)
+        cv2.waitKey()
+        # Cambiando espacio de colors de RGB -> HSV
+        hsv = cv2.cvtColor(sceneImage, cv2.COLOR_BGR2HSV)
+
+        # Threshold de rojo
+        lower_red = np.array([0,50,50])
+        upper_red = np.array([10,255,255])
+        
+        # Binariazación
+        selection = cv2.inRange(hsv, lower_red, upper_red)
+
+        # Creación de máscara para relleno
+        h, w = selection.shape[:2]
+        floodMask = np.zeros((h+2, w+2), np.uint8)
+        cv2.floodFill(selection, floodMask, (0,0), 255)
+        mask = cv2.bitwise_not(selection)
+
+        # Obtención de la región seleccionada por le usuario
+        pixels = cv2.bitwise_and(sceneImage, sceneImage, mask=mask)
+        x,y,w,h = cv2.boundingRect(mask)
+
+        pixels = pixels[y:y+h, x:x+w]
+
+        cv2.imshow("Imagen", pixels)
+
+    def getSceneImage(self):
+        #Obtener imagen de la escenea en QGraphicsView
+        area = self._scene.sceneRect()
+        scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
+        painter = QPainter(scene)
+
+        self._scene.render(painter, area)
+        painter.end()
+        
+        scene = scene.convertToFormat(QtGui.QImage.Format.Format_RGB32)
+
+        width = scene.width()
+        height = scene.height()
+
+        ptr = scene.bits()
+        ptr.setsize(height * width * 4)
+
+        # Escena convertida en imágen
+        sceneImage = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
+        return sceneImage
+
+
 # Clase para definir el color de la selección
 class GraphicPathItem(QtWidgets.QGraphicsPathItem):
     def __init__(self):
@@ -164,8 +237,6 @@ class GraphicPathItem(QtWidgets.QGraphicsPathItem):
 
 # Clase del pop-up para ingresar valores
 class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
-    filename = None
-
     def __init__(self, parent):
         super(ValuesDialog, self).__init__(parent)
         self.parent = parent
@@ -183,7 +254,8 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             # Guardando datos
             spad = float(spad_text)
             lab = float(lab_text)
-            svc.create_ndvi(self.filename, spad, lab)
+            self.parent.cropROI()
+            svc.create_ndvi(self.parent.ndvi_filename, spad, lab)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
             # Añadiendo label en la selección
             pos = self.parent.end
