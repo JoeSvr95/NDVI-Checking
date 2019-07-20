@@ -30,29 +30,27 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.selectBtn.clicked.connect(self.selectROI)
         mongo_setup.global_init()
 
-    # Método para colocar una imágen
+    # Método para colocar una imagen en el widget de RGB
     def loadRGBImage(self):
-        fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.tiff)")
-        if fileName:
-            pixmap = QPixmap(fileName)
-            file_info = QFileInfo(fileName)
-            #pixmap = pixmap.scaled(self.ndvi_view.width(), self.ndvi_view.height(), QtCore.Qt.KeepAspectRatio)
-            size = pixmap.size()
-            self.rgb_view.setImage(pixmap)
-            self.rgb_info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + str(file_info.size()))
+        self.loadImage(self.rgb_view, self.rgb_info)
     
+    # Método para colocar una imagen en el widget de NDVI
     def loadNDVIImage(self):
+        ndvi_image = self.loadImage(self.ndvi_view, self.ndvi_info)
+        self.ndvi_view.ndvi_filename = ndvi_image
+        self.selectBtn.setEnabled(True)
+
+    # Método para cargar una imágen a un widget y colocar información
+    def loadImage(self, widget, info):
         fileName, _ = QFileDialog.getOpenFileName(None, "Cargar Imagen", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.tiff)")
-        ndvi_image = QFileInfo(fileName).fileName()
+        image = QFileInfo(fileName).fileName()
         if fileName:
             pixmap = QPixmap(fileName)
             file_size = QFileInfo(fileName).size()
-            #pixmap = pixmap.scaled(self.ndvi_view.width(), self.ndvi_view.height(), QtCore.Qt.KeepAspectRatio)
             size = pixmap.size()
-            self.ndvi_view.setImage(pixmap)
-            self.ndvi_info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + format_bytes(file_size))
-            self.ndvi_view.ndvi_filename = ndvi_image
-        self.selectBtn.setEnabled(True)
+            widget.setImage(pixmap)
+            info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + format_bytes(file_size))
+        return image
 
     # Función para hacer zoom en las dos imágenes al mismo tiempo
     def wheelEvent(self, event):
