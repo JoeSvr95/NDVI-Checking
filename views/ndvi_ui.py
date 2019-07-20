@@ -79,15 +79,6 @@ class Ui_MainWindow(object):
         self.selectBtn.setSizePolicy(sizePolicy)
         self.selectBtn.setObjectName("selectBtn")
         self.ndvi_tools.addWidget(self.selectBtn)
-        self.opencvBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.opencvBtn.setEnabled(False)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.opencvBtn.sizePolicy().hasHeightForWidth())
-        self.opencvBtn.setSizePolicy(sizePolicy)
-        self.opencvBtn.setObjectName("opencvBtn")
-        self.ndvi_tools.addWidget(self.opencvBtn)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.ndvi_tools.addItem(spacerItem1)
         self.img_ndvi_layout.addLayout(self.ndvi_tools)
@@ -119,6 +110,5 @@ class Ui_MainWindow(object):
         self.loadRGBBtn.setText(_translate("MainWindow", "Cargar RGB"))
         self.loadNDVIBtn.setText(_translate("MainWindow", "Cargar NDVI"))
         self.selectBtn.setText(_translate("MainWindow", "Seleccionar"))
-        self.opencvBtn.setText(_translate("MainWindow", "OpenCV"))
 
 from ndvi_lib.ndvi_class import NDVIViewer, RGBViewer

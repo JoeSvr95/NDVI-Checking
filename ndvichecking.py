@@ -11,6 +11,16 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap
 
+# Convierte el número de bytes en formato más legible
+def format_bytes(size):
+    power = 2**10
+    n = 0
+    power_labels = {0: '', 1: 'KB', 2: 'MB', 3: 'GB'}
+    while size > power:
+        size /= power
+        n += 1
+    return '%.2f%s' % (size, power_labels[n])
+
 class MainNDVI(Ui_MainWindow, QMainWindow):
     def __init__(self): # Inicializa todos los atributos y los widgets
         super(MainNDVI, self).__init__()
@@ -36,14 +46,13 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         ndvi_image = QFileInfo(fileName).fileName()
         if fileName:
             pixmap = QPixmap(fileName)
-            file_info = QFileInfo(fileName)
+            file_size = QFileInfo(fileName).size()
             #pixmap = pixmap.scaled(self.ndvi_view.width(), self.ndvi_view.height(), QtCore.Qt.KeepAspectRatio)
             size = pixmap.size()
             self.ndvi_view.setImage(pixmap)
-            self.ndvi_info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + str(file_info.size()))
+            self.ndvi_info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + format_bytes(file_size))
             self.ndvi_view.ndvi_filename = ndvi_image
         self.selectBtn.setEnabled(True)
-        self.opencvBtn.setEnabled(True)
 
     # Función para hacer zoom en las dos imágenes al mismo tiempo
     def wheelEvent(self, event):

@@ -138,20 +138,21 @@ class NDVIViewer(RGBViewer):
         else:
             super(NDVIViewer, self).mouseReleaseEvent(event)
 
+    # Borra la última selección que hizo el usuario
     def deleteLastSelection(self):
         self._scene.removeItem(self.item)
         self.path = QPainterPath()
         self.item = GraphicPathItem()
         self.scene().addItem(self.item)
 
+    # Crea una nueva instancia de GraphicPathItem para realizar nueva selección
     def newItem(self):
         self.path = QPainterPath()
         self.item = GraphicPathItem()
         self.scene().addItem(self.item)
 
-    # Función para poder procesar la imagen y obtener los pixeles del ROI
-    def cropROI(self):
-        '''
+    # Función para convertir la escenea del QGraphicsView a una imagen RGB
+    def getSceneImage(self):
         #Obtener imagen de la escenea en QGraphicsView
         area = self._scene.sceneRect()
         scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
@@ -160,7 +161,7 @@ class NDVIViewer(RGBViewer):
         self._scene.render(painter, area)
         painter.end()
         
-        scene = scene.convertToFormat(QtGui.QImage.Format.Format_RGB32)
+        scene = scene.convertToFormat(QImage.Format.Format_RGB32)
 
         width = scene.width()
         height = scene.height()
@@ -169,14 +170,13 @@ class NDVIViewer(RGBViewer):
         ptr.setsize(height * width * 4)
 
         # Escena convertida en imágen
-        sceneImage = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
-        '''
+        sceneImage = np.array(ptr, np.uint8).reshape((height, width, 4))
+        return sceneImage
 
-        sceneImg = self.getSceneImage()
-        cv2.imshow("sceneimage", sceneImg)
-        cv2.waitKey()
+    
+    def getPixelsFromROI(self, img):
         # Cambiando espacio de colors de RGB -> HSV
-        hsv = cv2.cvtColor(sceneImage, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         # Threshold de rojo
         lower_red = np.array([0,50,50])
@@ -192,33 +192,20 @@ class NDVIViewer(RGBViewer):
         mask = cv2.bitwise_not(selection)
 
         # Obtención de la región seleccionada por le usuario
-        pixels = cv2.bitwise_and(sceneImage, sceneImage, mask=mask)
+        pixels = cv2.bitwise_and(img, img, mask=mask)
         x,y,w,h = cv2.boundingRect(mask)
 
-        pixels = pixels[y:y+h, x:x+w]
+        return pixels[y:y+h, x:x+w]
 
-        cv2.imshow("Imagen", pixels)
+    # Función para poder procesar la imagen y obtener los pixeles del ROI
+    def ROI(self):
+        # Creando imagen a partir de la escena
+        sceneImg = self.getSceneImage()
 
-    def getSceneImage(self):
-        #Obtener imagen de la escenea en QGraphicsView
-        area = self._scene.sceneRect()
-        scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
-        painter = QPainter(scene)
+        # Obteniendo los pixeles dentro de la región
+        pix = self.getPixelsFromROI(sceneImg)
 
-        self._scene.render(painter, area)
-        painter.end()
-        
-        scene = scene.convertToFormat(QtGui.QImage.Format.Format_RGB32)
-
-        width = scene.width()
-        height = scene.height()
-
-        ptr = scene.bits()
-        ptr.setsize(height * width * 4)
-
-        # Escena convertida en imágen
-        sceneImage = np.frombuffer(ptr, np.uint8).reshape((height, width, 4))
-        return sceneImage
+        cv2.imshow("Imagen", pix)
 
 
 # Clase para definir el color de la selección
@@ -254,7 +241,7 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             # Guardando datos
             spad = float(spad_text)
             lab = float(lab_text)
-            self.parent.cropROI()
+            self.parent.ROI()
             svc.create_ndvi(self.parent.ndvi_filename, spad, lab)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
             # Añadiendo label en la selección
@@ -268,19 +255,25 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
         else:
             QMessageBox.warning(self, "Error", "No se pudo ingresar los datos", QMessageBox.Ok)
             
-        self.spad_txt.clear()
-        self.lab_txt.clear()
+        self.clearTextBoxes()
         self.done(QtWidgets.QDialog.Accepted)
 
     @pyqtSlot()
     def reject(self):
         self.parent.deleteLastSelection()
+        self.clearTextBoxes()
         self.done(QtWidgets.QDialog.Rejected)
 
+    # Agrega etiquetas en la región de interés
     def addLabel(self, valueType, value, position):
         label = QGraphicsTextItem()
         label.setPlainText(valueType + value)
         label.setPos(position)
         self.parent.scene().addItem(label)
+
+    # Limpia los TextBoxes del pop-up
+    def clearTextBoxes(self):
+        self.spad_txt.clear()
+        self.lab_txt.clear()
     
 
