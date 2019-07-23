@@ -153,14 +153,8 @@ class NDVIViewer(RGBViewer):
 
     # Función para convertir la escenea del QGraphicsView a una imagen RGB
     def getSceneImage(self):
-        #Obtener imagen de la escenea en QGraphicsView
-        area = self._scene.sceneRect()
-        scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
-        painter = QPainter(scene)
-
-        self._scene.render(painter, area)
-        painter.end()
-        
+        # Obteniendo un objeto QImage de la escena
+        scene = self.getQImageOfScene()
         scene = scene.convertToFormat(QImage.Format.Format_RGB32)
 
         width = scene.width()
@@ -173,7 +167,19 @@ class NDVIViewer(RGBViewer):
         sceneImage = np.array(ptr, np.uint8).reshape((height, width, 4))
         return sceneImage
 
-    
+    # Función para obtener un objeto QImage de la escene adel QGrahpicsView
+    def getQImageOfScene(self):
+        #Obtener imagen de la escenea en QGraphicsView
+        area = self._scene.sceneRect()
+        scene = QImage(area.width(), area.height(), QImage.Format_ARGB32_Premultiplied)
+        painter = QPainter(scene)
+
+        self._scene.render(painter, area)
+        painter.end()
+
+        return scene
+
+    # Función para obtener los pixeles de la región de interés    
     def getPixelsFromROI(self, img):
         # Cambiando espacio de colors de RGB -> HSV
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -206,6 +212,10 @@ class NDVIViewer(RGBViewer):
         pix = self.getPixelsFromROI(sceneImg)
 
         cv2.imshow("Imagen", pix)
+
+    # Función para obtener el nombre del archivo
+    def getFileName(self):
+        return self.ndvi_filename
 
 
 # Clase para definir el color de la selección

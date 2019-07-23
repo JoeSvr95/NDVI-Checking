@@ -7,7 +7,7 @@ from views.ndvi_ui import Ui_MainWindow
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot, QPoint, Qt, QFileInfo
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, qApp
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap
 
@@ -25,9 +25,16 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
     def __init__(self): # Inicializa todos los atributos y los widgets
         super(MainNDVI, self).__init__()
         self.setupUi(self)
+        # Conectando botones a acciones
         self.loadRGBBtn.clicked.connect(self.loadRGBImage)
         self.loadNDVIBtn.clicked.connect(self.loadNDVIImage)
         self.selectBtn.clicked.connect(self.selectROI)
+        # Connectando acciones del menú
+        self.actionSalir.triggered.connect(self.salir_trigger)
+        self.actionAbrir_imagen_RGB.triggered.connect(self.loadRGBImage)
+        self.actionAbrir_imagen_NDVI.triggered.connect(self.loadNDVIImage)
+        self.actionSeleccionar.triggered.connect(self.selectROI)
+        self.actionGuardar_como.triggered.connect(self.saveAsImage)
         mongo_setup.global_init()
 
     # Método para colocar una imagen en el widget de RGB
@@ -51,16 +58,36 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
             widget.setImage(pixmap)
             info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + format_bytes(file_size))
         return image
-
+    
     # Función para hacer zoom en las dos imágenes al mismo tiempo
     def wheelEvent(self, event):
         self.ndvi_view.wheelEvent(event)
         self.rgb_view.wheelEvent(event)
-
+    
+    # Función para seleccionar una región de interés
     def selectROI(self):
         self.selectBtn.setDown(True)
         self.ndvi_view.startSelectROI()
 
+    # Función para salir del programa
+    def salir_trigger(self):
+        qApp.quit()
+
+    # Función para guardar una imagen especificando el nombre y formato
+    def saveAsImage(self):
+        image = self.ndvi_view.getQImageOfScene()
+        
+        # Por defecto el nombre del archivo a guardar será el mismo pero añadido '_lables' al final
+        fileName = self.ndvi_view.getFileName()
+        index = fileName.find('.')
+        
+        new_fileName = fileName[:index] + "_labels" + fileName[index:]
+        imagePath = QFileDialog.getSaveFileName(self, "Guardar Imagen como", new_fileName, "*.tiff *.png *.jpg *.jpeg")
+        image.save(imagePath[0])
+
+    # Función para sobreescribir la imagen
+    def saveImage(self):
+        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
