@@ -252,13 +252,16 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             spad = float(spad_text)
             lab = float(lab_text)
             self.parent.ROI()
+            print("ndvi_filename: ", self.parent.ndvi_filename)
             svc.create_ndvi(self.parent.ndvi_filename, spad, lab)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
+            
             # Añadiendo label en la selección
             pos = self.parent.end
             self.addLabel(self.spad_lbl.text(), spad_text, pos)
             pos.setY(pos.y() + 20)
             self.addLabel(self.lab_lbl.text(), lab_text, pos)
+            
             # Cambiando el color de la selección
             self.parent.item.setColor(Qt.green)
             self.parent.newItem()

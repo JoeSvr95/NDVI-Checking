@@ -3,6 +3,9 @@ from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
+import data.mongo_setup as mongo_setup
+import services.data_services as svc
+
 #Función para entrenar
 def train(x, y, booleanTrainTotal, testPercent):
     # x es NDVI, y es Clorofila
@@ -29,15 +32,16 @@ def train(x, y, booleanTrainTotal, testPercent):
 
 ############### PROGRAMA ###############
 # Base de datos
-base = datasets.load_diabetes() # DE PRUEBA
+mongo_setup.global_init()
 
 # Obtener datos de x - Valor NDVI
-x = base.data[:, np.newaxis, 5] # DE PRUEBA
-
+x = svc.getAllNDVI()
+print(x)
 
 ################ CLOROFILA LABORATORIO ################
 # Obtener datos de y - Valor Clorofila Laboratorio
-y = base.target #DE PRUEBA
+y = svc.getAllLAB()
+print(y)
 
 # Gráfica de los datos
 plt.scatter(x, y)
@@ -70,7 +74,7 @@ print('Precisión del modelo: ', lrs.score(xTrain, yTrain))
 
 ################ CLOROFILA SPAD ################
 # Obtener datos de y - Valor Clorofila SPAD
-y = base.target #DE PRUEBA
+y = svc.getAllSPAD()
 
 # Gráfica de los datos
 plt.scatter(x, y)

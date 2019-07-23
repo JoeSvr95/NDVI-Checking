@@ -35,6 +35,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.actionAbrir_imagen_NDVI.triggered.connect(self.loadNDVIImage)
         self.actionSeleccionar.triggered.connect(self.selectROI)
         self.actionGuardar_como.triggered.connect(self.saveAsImage)
+        self.actionGuardar.triggered.connect(self.saveImage)
         mongo_setup.global_init()
 
     # Método para colocar una imagen en el widget de RGB
@@ -45,6 +46,9 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
     def loadNDVIImage(self):
         ndvi_image = self.loadImage(self.ndvi_view, self.ndvi_info)
         self.ndvi_view.ndvi_filename = ndvi_image
+
+        # Añadiendo el nombre del archivo al título de la ventana
+        self.setWindowTitle(self.windowTitle() + " - " + ndvi_image) 
         self.selectBtn.setEnabled(True)
 
     # Método para cargar una imágen a un widget y colocar información
@@ -82,12 +86,15 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         index = fileName.find('.')
         
         new_fileName = fileName[:index] + "_labels" + fileName[index:]
-        imagePath = QFileDialog.getSaveFileName(self, "Guardar Imagen como", new_fileName, "*.tiff *.png *.jpg *.jpeg")
-        image.save(imagePath[0])
+        self.savePath = QFileDialog.getSaveFileName(self, "Guardar Imagen como", new_fileName, "*.tiff *.png *.jpg *.jpeg")
+        image.save(self.savePath[0])
+
+        self.actionGuardar.setEnabled(True)
 
     # Función para sobreescribir la imagen
     def saveImage(self):
-        pass
+        image = self.ndvi_view.getQImageOfScene()
+        image.save(self.savePath[0])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

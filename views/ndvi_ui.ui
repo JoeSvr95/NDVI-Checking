@@ -226,7 +226,7 @@
      <x>0</x>
      <y>0</y>
      <width>947</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
@@ -259,6 +259,9 @@
    </property>
   </action>
   <action name="actionGuardar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Guardar</string>
    </property>
