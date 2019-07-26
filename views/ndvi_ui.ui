@@ -265,6 +265,9 @@
    <property name="text">
     <string>Guardar</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionGuardar_como">
    <property name="text">
@@ -274,6 +277,9 @@
   <action name="actionSalir">
    <property name="text">
     <string>Salir</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionSeleccionar">

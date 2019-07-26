@@ -4,7 +4,7 @@ import services.data_services as svc
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot
-from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QIntValidator
+from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QDoubleValidator
 from PyQt5.QtWidgets import QMessageBox, QGraphicsTextItem
 
 from views.popup_ui import Ui_Dialog
@@ -217,7 +217,6 @@ class NDVIViewer(RGBViewer):
     def getFileName(self):
         return self.ndvi_filename
 
-
 # Clase para definir el color de la selección
 class GraphicPathItem(QtWidgets.QGraphicsPathItem):
     def __init__(self):
@@ -238,7 +237,7 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
         super(ValuesDialog, self).__init__(parent)
         self.parent = parent
         self.setupUi(self)
-        self.validator = QIntValidator()
+        self.validator = QDoubleValidator()
         self.spad_txt.setValidator(self.validator)
         self.lab_txt.setValidator(self.validator)
 
@@ -252,7 +251,6 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             spad = float(spad_text)
             lab = float(lab_text)
             self.parent.ROI()
-            print("ndvi_filename: ", self.parent.ndvi_filename)
             svc.create_ndvi(self.parent.ndvi_filename, spad, lab)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
             
@@ -266,6 +264,7 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             self.parent.item.setColor(Qt.green)
             self.parent.newItem()
         else:
+            self.parent.deleteLastSelection()
             QMessageBox.warning(self, "Error", "No se pudo ingresar los datos", QMessageBox.Ok)
             
         self.clearTextBoxes()
@@ -288,5 +287,3 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
     def clearTextBoxes(self):
         self.spad_txt.clear()
         self.lab_txt.clear()
-    
-

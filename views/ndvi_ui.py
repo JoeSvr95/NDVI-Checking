@@ -144,8 +144,10 @@ class Ui_MainWindow(object):
         self.actionAbrir_imagen_RGB.setText(_translate("MainWindow", "Abrir imagen RGB"))
         self.actionAbrir_imagen_NDVI.setText(_translate("MainWindow", "Abrir imagen NDVI"))
         self.actionGuardar.setText(_translate("MainWindow", "Guardar"))
+        self.actionGuardar.setShortcut(_translate("MainWindow", "Ctrl+S"))
         self.actionGuardar_como.setText(_translate("MainWindow", "Guardar como..."))
         self.actionSalir.setText(_translate("MainWindow", "Salir"))
+        self.actionSalir.setShortcut(_translate("MainWindow", "Ctrl+W"))
         self.actionSeleccionar.setText(_translate("MainWindow", "Seleccionar"))
 
 from ndvi_lib.ndvi_class import NDVIViewer, RGBViewer
