@@ -35,13 +35,20 @@ def train(x, y, booleanTrainTotal, testPercent):
 mongo_setup.global_init()
 
 # Obtener datos de x - Valor NDVI
-x = svc.getAllNDVI()
-print(x)
+# x = svc.getAllNDVI()
+# print(x)
+
+# Base de datos
+base = datasets.load_diabetes() # DE PRUEBA
+
+# Obtener datos de x - Valor NDVI
+x = base.data[:, np.newaxis, 5] # DE PRUEBA
 
 ################ CLOROFILA LABORATORIO ################
 # Obtener datos de y - Valor Clorofila Laboratorio
-y = svc.getAllLAB()
-print(y)
+# y = svc.getAllLAB()
+y = base.target #DE PRUEBA
+# print(y)
 
 # Gráfica de los datos
 plt.scatter(x, y)
@@ -74,7 +81,8 @@ print('Precisión del modelo: ', lrs.score(xTrain, yTrain))
 
 ################ CLOROFILA SPAD ################
 # Obtener datos de y - Valor Clorofila SPAD
-y = svc.getAllSPAD()
+# y = svc.getAllSPAD()
+y = base.target #DE PRUEBA
 
 # Gráfica de los datos
 plt.scatter(x, y)
