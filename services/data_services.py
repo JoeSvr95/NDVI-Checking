@@ -5,8 +5,7 @@ from data.labels import Label
     en la base de datos
 '''
 
-def create_ndvi(filename, spad: float, lab: float):
-    pixels = [1,2]
+def create_ndvi(filename, spad: float, lab: float, pixels):
     file_info = filename.split(".")
     label = Label()
     label.name = file_info[0]

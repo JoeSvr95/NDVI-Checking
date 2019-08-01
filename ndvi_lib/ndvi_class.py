@@ -85,6 +85,7 @@ class NDVIViewer(RGBViewer):
     item = None
     path = None
     ndvi_filename = None
+    roi = None
 
     def __init__(self, parent):
         super(NDVIViewer, self).__init__(parent)
@@ -203,6 +204,12 @@ class NDVIViewer(RGBViewer):
 
         return pixels[y:y+h, x:x+w]
 
+    # Función que toma la región de interes y devuelve una lista
+    # con los valores de los pixeles
+    def getListOfPixels(self, roi):
+        rows, cols, chan = np.nonzero(roi)
+        return roi[rows, cols, chan].tolist()
+
     # Función para poder procesar la imagen y obtener los pixeles del ROI
     def ROI(self):
         # Creando imagen a partir de la escena
@@ -211,6 +218,8 @@ class NDVIViewer(RGBViewer):
         # Obteniendo los pixeles dentro de la región
         pix = self.getPixelsFromROI(sceneImg)
 
+        # Obtener una lista con los valores de los pixeles de la imagen
+        self.roi = self.getListOfPixels(pix)
         cv2.imshow("Imagen", pix)
 
     # Función para obtener el nombre del archivo
@@ -251,7 +260,7 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             spad = float(spad_text)
             lab = float(lab_text)
             self.parent.ROI()
-            svc.create_ndvi(self.parent.ndvi_filename, spad, lab)
+            svc.create_ndvi(self.parent.ndvi_filename, spad, lab,  self.parent.roi)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
             
             # Añadiendo label en la selección
