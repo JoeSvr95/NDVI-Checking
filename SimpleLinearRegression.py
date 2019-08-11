@@ -29,36 +29,46 @@ def train(x, y, booleanTrainTotal, testPercent):
 
     return lrs, xTrain, yTrain, xTest, yTest, yPred
 
+# base = datasets.load_diabetes() # DE PRUEBA
+# x = base.data[:, np.newaxis, 5] # DE PRUEBA
+# ylab = base.target #DE PRUEBA
+# yspad = base.target #DE PRUEBA
+
 
 ############### PROGRAMA ###############
 # Base de datos
 mongo_setup.global_init()
 
 # Obtener datos de x - Valor NDVI
-# x = svc.getAllNDVI()
-# print(x)
+tempx = svc.getAllNDVI()
 
-# Base de datos
-base = datasets.load_diabetes() # DE PRUEBA
+# Obtener datos de y - Valor Clorofila Laboratorio y SPAD
+templab = svc.getAllLAB()
+tempspad = svc.getAllSPAD()
 
-# Obtener datos de x - Valor NDVI
-x = base.data[:, np.newaxis, 5] # DE PRUEBA
+x = []
+ylab = []
+yspad = []
+for i in tempx:
+    for j in i:
+        if j > 0.1:
+            x.append([j])
+            ylab.append(templab[tempx.index(i)])
+            yspad.append(tempspad[tempx.index(i)])
 
 ################ CLOROFILA LABORATORIO ################
-# Obtener datos de y - Valor Clorofila Laboratorio
-# y = svc.getAllLAB()
-y = base.target #DE PRUEBA
-# print(y)
+print("\nNDVI:\n", x)
+print("\nLAB:\n", ylab)
 
 # Gráfica de los datos
-plt.scatter(x, y)
+plt.scatter(x, ylab)
 plt.title('Clorofila Laboratorio')
 plt.xlabel('Valor NDVI')
 plt.ylabel('Valor Clorofila Laboratorio')
 plt.show()
 
 # Entrena con el 75% y predice con el 25% restante
-lrs, xTrain, yTrain, xTest, yTest, yPred = train(x, y, 0, 0.25)
+lrs, xTrain, yTrain, xTest, yTest, yPred = train(x, ylab, 1, 0.25)
 
 print('\nPREDICCIÓN CLOROFILA LABORATORIO')
 print('\nDatos de NDVI:\n', xTest)
@@ -80,19 +90,18 @@ print('Precisión del modelo: ', lrs.score(xTrain, yTrain))
 
 
 ################ CLOROFILA SPAD ################
-# Obtener datos de y - Valor Clorofila SPAD
-# y = svc.getAllSPAD()
-y = base.target #DE PRUEBA
+print("\nNDVI:\n", x)
+print("\nSPAD:\n", yspad)
 
 # Gráfica de los datos
-plt.scatter(x, y)
+plt.scatter(x, yspad)
 plt.title('Clorofila SPAD')
 plt.xlabel('Valor NDVI')
 plt.ylabel('Valor Clorofila SPAD')
 plt.show()
 
 # Entrena con el 75% y predice con el 25% restante
-lrs, xTrain, yTrain, xTest, yTest, yPred = train(x, y, 0, 0.25)
+lrs, xTrain, yTrain, xTest, yTest, yPred = train(x, yspad, 1, 0.25)
 
 print('\nPREDICCIÓN CLOROFILA SPAD')
 print('\nDatos de NDVI:\n', xTest)

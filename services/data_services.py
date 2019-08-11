@@ -17,10 +17,10 @@ def create_ndvi(filename, spad: float, lab: float, pixels):
     label.save()
 
 def getAllLAB():
-    return Label.objects().filter().values_list('LAB')
+    return list(Label.objects().all().values_list('LAB'))
 
 def getAllNDVI():
-    return Label.objects().filter().values_list('NDVI')
+    return list(Label.objects().all().values_list('NDVI'))
 
 def getAllSPAD():
-    return Label.objects().filter().values_list('SPAD')
+    return list(Label.objects().all().values_list('SPAD'))
