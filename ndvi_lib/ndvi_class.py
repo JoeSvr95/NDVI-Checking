@@ -208,7 +208,10 @@ class NDVIViewer(RGBViewer):
     # con los valores de los pixeles
     def getListOfPixels(self, roi):
         rows, cols, chan = np.nonzero(roi)
-        return roi[rows, cols, chan].tolist()
+        nir_data = np.load('IR.npy') # Carga el canal Infrared
+        red_data = np.load('RE.npy') # Carga el canal Near Red
+        ndvi_pixels = (nir_data - red_data) / (nir_data + red_data)
+        return ndvi_pixels[rows, cols].tolist()
 
     # Función para poder procesar la imagen y obtener los pixeles del ROI
     def ROI(self):
@@ -270,7 +273,7 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             self.addLabel(self.lab_lbl.text(), lab_text, pos)
             
             # Cambiando el color de la selección
-            self.parent.item.setColor(Qt.green)
+            self.parent.item.setColor(Qt.blue)
             self.parent.newItem()
         else:
             self.parent.deleteLastSelection()
@@ -290,6 +293,7 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
         label = QGraphicsTextItem()
         label.setPlainText(valueType + value)
         label.setPos(position)
+        label.setDefaultTextColor(Qt.white)
         self.parent.scene().addItem(label)
 
     # Limpia los TextBoxes del pop-up
