@@ -29,7 +29,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
         self.loadRGBBtn.clicked.connect(self.loadRGBImage)
         self.loadNDVIBtn.clicked.connect(self.loadNDVIImage)
         self.selectBtn.clicked.connect(self.selectROI)
-        # Connectando acciones del menú
+        # Conectando acciones del menú
         self.actionSalir.triggered.connect(self.salir_trigger)
         self.actionAbrir_imagen_RGB.triggered.connect(self.loadRGBImage)
         self.actionAbrir_imagen_NDVI.triggered.connect(self.loadNDVIImage)

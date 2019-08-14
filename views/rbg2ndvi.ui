@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>rgb_visualizer</class>
+ <widget class="QMainWindow" name="rgb_visualizer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>779</width>
+    <height>660</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Obtener NDVI</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Valor RGB del pixel:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Valor NDVI del pixel:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="RGBViewer" name="rgbview"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>779</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuArchivo">
+    <property name="title">
+     <string>Archivo</string>
+    </property>
+    <addaction name="actionAbrir_Imagen"/>
+    <addaction name="actionCerrar"/>
+   </widget>
+   <addaction name="menuArchivo"/>
+  </widget>
+  <widget class="QStatusBar" name="rgbinfo"/>
+  <action name="actionAbrir_Imagen">
+   <property name="text">
+    <string>Abrir Imagen</string>
+   </property>
+  </action>
+  <action name="actionCerrar">
+   <property name="text">
+    <string>Cerrar</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>RGBViewer</class>
+   <extends>QGraphicsView</extends>
+   <header>ndvi_lib.ndvi_class</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
