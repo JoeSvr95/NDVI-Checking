@@ -3,8 +3,8 @@ import cv2
 import services.data_services as svc
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot
-from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QDoubleValidator
+from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot, QPointF
+from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QDoubleValidator, QColor
 from PyQt5.QtWidgets import QMessageBox, QGraphicsTextItem
 
 from views.popup_ui import Ui_Dialog
@@ -242,6 +242,23 @@ class GraphicPathItem(QtWidgets.QGraphicsPathItem):
         self.pen.setColor(color)
         self.setPen(self.pen)
         self.update()
+
+# Clase para pasar de RGB a NDVI
+class RGB2CHLA(RGBViewer):
+    RGBImage = None
+
+    def __init__(self, parent):
+        super(RGB2CHLA, self).__init__(parent)
+    
+    def mousePressEvent(self, event):
+        print("IMPLEMENTAR CALCULAR CLOROFILA")
+        position = self.mapToScene(event.pos())
+        bounding_rect = self.image.sceneBoundingRect()
+        if bounding_rect.contains(position):
+            pixel = position.toPoint()
+            print(self.RGBImage[pixel.y(), pixel.x()])
+        super(RGB2CHLA, self).mousePressEvent(event)
+
 
 # Clase del pop-up para ingresar valores
 class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):

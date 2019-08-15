@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import cv2
 
-from views.rbg2ndvi import Ui_rgb_visualizer
+from views.rbg2chla import Ui_rgb_visualizer
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
@@ -34,6 +34,7 @@ class MainRGB2NDVI(Ui_rgb_visualizer, QMainWindow):
             pixmap = QPixmap(fileName)
             file_size = QFileInfo(fileName).size()
             size = pixmap.size()
+            widget.RGBImage = cv2.imread(fileName)
             widget.setImage(pixmap)
             info.showMessage("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + format_bytes(file_size))
         return image
