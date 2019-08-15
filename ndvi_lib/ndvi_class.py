@@ -246,6 +246,8 @@ class GraphicPathItem(QtWidgets.QGraphicsPathItem):
 # Clase para pasar de RGB a NDVI
 class RGB2CHLA(RGBViewer):
     RGBImage = None
+    lbl_rgb = None
+    lbl_chla = None
 
     def __init__(self, parent):
         super(RGB2CHLA, self).__init__(parent)
@@ -256,7 +258,11 @@ class RGB2CHLA(RGBViewer):
         bounding_rect = self.image.sceneBoundingRect()
         if bounding_rect.contains(position):
             pixel = position.toPoint()
-            print(self.RGBImage[pixel.y(), pixel.x()])
+            self.lbl_rgb.setText(
+                "R: " + str(self.RGBImage[pixel.y(), pixel.x(), 2]) + "," 
+                " G: " + str(self.RGBImage[pixel.y(), pixel.x(), 1]) + "," +
+                " B: " + str(self.RGBImage[pixel.y(), pixel.x(), 0]))
+            self.lbl_chla.setText("MOSTRAR CLOROFILIA")
         super(RGB2CHLA, self).mousePressEvent(event)
 
 

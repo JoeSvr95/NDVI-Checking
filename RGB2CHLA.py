@@ -25,6 +25,8 @@ class MainRGB2NDVI(Ui_rgb_visualizer, QMainWindow):
         self.setupUi(self)
         # Conectando acciones del menú
         self.actionAbrir_Imagen.triggered.connect(self.loadRGBImage)
+        self.rgbview.lbl_rgb = self.lblRGBValue
+        self.rgbview.lbl_chla = self.lblCHLAValue
     
     # Método para cargar una imágen a un widget y colocar información
     def loadImage(self, widget, info):
