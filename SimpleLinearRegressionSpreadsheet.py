@@ -95,3 +95,8 @@ print('Correlación lineal entre predichos y manuales: ', lrs1.score(yMan, yPred
 
 sns.distplot((yTest - yPred), bins = 50)
 plt.show()
+
+# Funcion para predecir
+ndvi = 0.48469806 # Ejemplo
+yPred = lrs.predict([[ ndvi ]])
+print(yPred)

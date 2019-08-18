@@ -51,7 +51,7 @@ class Ui_rgb_visualizer(object):
         self.gridLayout.addLayout(self.verticalLayout, 1, 0, 1, 1)
         rgb_visualizer.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(rgb_visualizer)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 779, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 779, 26))
         self.menubar.setObjectName("menubar")
         self.menuArchivo = QtWidgets.QMenu(self.menubar)
         self.menuArchivo.setObjectName("menuArchivo")
@@ -73,7 +73,7 @@ class Ui_rgb_visualizer(object):
     def retranslateUi(self, rgb_visualizer):
         _translate = QtCore.QCoreApplication.translate
         rgb_visualizer.setWindowTitle(_translate("rgb_visualizer", "Obtener Clorofila"))
-        self.lblRGB.setText(_translate("rgb_visualizer", "Valor RGB del pixel:"))
+        self.lblRGB.setText(_translate("rgb_visualizer", "Valor NDVI del pixel:"))
         self.lblCHLA.setText(_translate("rgb_visualizer", "Valor de clorofilal:"))
         self.menuArchivo.setTitle(_translate("rgb_visualizer", "Archivo"))
         self.actionAbrir_Imagen.setText(_translate("rgb_visualizer", "Abrir Imagen"))

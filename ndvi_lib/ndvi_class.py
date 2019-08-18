@@ -1,6 +1,11 @@
 import numpy as np
 import cv2
+
 import services.data_services as svc
+
+from sklearn import datasets, linear_model, metrics
+from sklearn.model_selection import train_test_split
+from openpyxl import load_workbook
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot, QPointF
@@ -8,6 +13,29 @@ from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QDoubleVa
 from PyQt5.QtWidgets import QMessageBox, QGraphicsTextItem
 
 from views.popup_ui import Ui_Dialog
+
+#Función para entrenar
+def train(x, y, booleanTrainTotal, testPercent):
+    # x es NDVI, y es Clorofila
+    # booleanTrainTotal indica si se usa todos los datos para entrenar, testPercent indica porcentaje de datos para predecir
+    xTrain, xTest, yTrain, yTest = train_test_split(x, y, test_size=testPercent)
+    
+    if (booleanTrainTotal):
+        xTrain = x
+        yTrain = y
+
+    if (testPercent == 1):
+        xTest = x
+        yTest = y
+
+    # Definir regresión lineal simple y entrenar modelo
+    lrs = linear_model.LinearRegression()
+    lrs.fit(xTrain, yTrain)
+
+    # Realizar predicción con datos de prueba
+    yPred = lrs.predict(xTest)
+
+    return lrs, xTrain, yTrain, xTest, yTest, yPred
 
 '''
     Clase que hereda de QGraphicsView
@@ -248,22 +276,74 @@ class RGB2CHLA(RGBViewer):
     RGBImage = None
     lbl_rgb = None
     lbl_chla = None
+    lrs = None
+    xTrain = None
+    yTrain = None
+    xTest = None 
+    yTest = None 
+    yPred = None
+    re_data = np.load('RE.npy')
+    ir_data = np.load('IR.npy')
+    xmin = 0
+    xmax = 0
 
     def __init__(self, parent):
         super(RGB2CHLA, self).__init__(parent)
+        self.doc = load_workbook('Dataset.xlsx')
+        self.sheets = self.doc.sheetnames
+        self.hoja = self.doc[self.sheets[0]]
+        self.filas = self.hoja.max_row+1
+
+        self.X, self.ySpad = self.FromatRows()
+        # Entrena con el 75% y predice con el 25% restante
+        self.lrs, self.xTrain, self.yTrain, self.xTest, self.yTest, self.yPred = train(self.X, self.ySpad, 1, 1)
     
+    def FromatRows(self):
+        x = []
+        yspad = []
+        
+        for i in range(3, self.filas):
+            spec = float(self.hoja[i][12].value)
+            ndvi = float(self.hoja[i][10].value)
+            if i == 3:
+                self.xmin = ndvi
+                self.xmax = ndvi
+            temp = ndvi
+            if temp > self.xmax:
+                self.xmax = temp
+            if temp < self.xmin:
+                self.xmin = temp
+            if ndvi > 0.1:
+                x.append([ndvi])
+                yspad.append(spec)
+
+        for i in range(0, len(x)):
+            x[i][0] = (x[i][0] - self.xmin) / (self.xmax - self.xmin)
+
+        print(x)
+        
+        print(self.xmax)
+        print(self.xmin)
+        return x, yspad
+
     def mousePressEvent(self, event):
-        print("IMPLEMENTAR CALCULAR CLOROFILA")
         position = self.mapToScene(event.pos())
         bounding_rect = self.image.sceneBoundingRect()
         if bounding_rect.contains(position):
             pixel = position.toPoint()
-            self.lbl_rgb.setText(
-                "R: " + str(self.RGBImage[pixel.y(), pixel.x(), 2]) + "," 
-                " G: " + str(self.RGBImage[pixel.y(), pixel.x(), 1]) + "," +
-                " B: " + str(self.RGBImage[pixel.y(), pixel.x(), 0]))
-            self.lbl_chla.setText("MOSTRAR CLOROFILIA")
+            print(self.re_data.shape)
+            print(self.ir_data.shape)
+            re_value = self.re_data[pixel.x(), pixel.y()]
+            ir_value = self.ir_data[pixel.x(), pixel.y()]
+            ndvi = self.calcularNDVI(re_value, ir_value)
+            print(ndvi)
+            self.lbl_rgb.setText(str(ndvi))
+            self.yPred = self.lrs.predict([[ ndvi ]])
+            self.lbl_chla.setText(str(self.yPred))
         super(RGB2CHLA, self).mousePressEvent(event)
+
+    def calcularNDVI(self, re, ir):
+        return (ir - re) / (ir + re)
 
 
 # Clase del pop-up para ingresar valores
