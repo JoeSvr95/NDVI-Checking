@@ -36,7 +36,7 @@ class MainRGB2NDVI(Ui_rgb_visualizer, QMainWindow):
             pixmap = QPixmap(fileName)
             file_size = QFileInfo(fileName).size()
             size = pixmap.size()
-            widget.RGBImage = cv2.imread(fileName)
+            widget.RGBImage = fileName
             widget.setImage(pixmap)
             info.showMessage("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + format_bytes(file_size))
         return image

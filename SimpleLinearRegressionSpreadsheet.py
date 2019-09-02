@@ -41,10 +41,10 @@ x = []
 yspad = []
 for i in range(3,filas):
     spec = float(hoja[i][12].value)
-    ndvi = float(hoja[i][10].value)
-    if ndvi > 0.1:
-        x.append([ndvi])
-        yspad.append(spec)
+    ndvi = float(hoja[i][18].value)
+    #if ndvi > 0.1:
+    x.append([ndvi])
+    yspad.append(spec)
 
 ################ CLOROFILA SPAD ################
 print("\nNDVI:\n", x)

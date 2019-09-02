@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import os
 
 import services.data_services as svc
 
@@ -8,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from openpyxl import load_workbook
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot, QPointF
+from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot, QPointF, QFileInfo
 from PyQt5.QtGui import QPainterPath, QPen, QPainter, QImage, QPixmap, QDoubleValidator, QColor
 from PyQt5.QtWidgets import QMessageBox, QGraphicsTextItem
 
@@ -341,6 +342,15 @@ class RGB2CHLA(RGBViewer):
             self.yPred = self.lrs.predict([[ ndvi ]])
             self.lbl_chla.setText(str(self.yPred))
         super(RGB2CHLA, self).mousePressEvent(event)
+
+    def setImage(self, pixmap=None):
+        fileName = QFileInfo(self.RGBImage).fileName()
+        fileNum = fileName[3:7]
+        filePath = os.path.dirname(self.RGBImage)
+        print(filePath + 'RE' + fileNum + '.npy')
+        self.re_data = np.load(filePath + '/R' + fileNum + '.npy')
+        self.ir_data = np.load(filePath + '/IR' + fileNum + '.npy')
+        super(RGB2CHLA, self).setImage(pixmap)
 
     def calcularNDVI(self, re, ir):
         return (ir - re) / (ir + re)
