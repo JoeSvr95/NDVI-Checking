@@ -283,7 +283,7 @@ class RGB2CHLA(RGBViewer):
     xTest = None 
     yTest = None 
     yPred = None
-    re_data = np.load('RE.npy')
+    re_data = np.load('R.npy')
     ir_data = np.load('IR.npy')
     xmin = 0
     xmax = 0
@@ -334,8 +334,8 @@ class RGB2CHLA(RGBViewer):
             pixel = position.toPoint()
             print(self.re_data.shape)
             print(self.ir_data.shape)
-            re_value = self.re_data[pixel.x(), pixel.y()]
-            ir_value = self.ir_data[pixel.x(), pixel.y()]
+            re_value = self.re_data[pixel.y(), pixel.x()]
+            ir_value = self.ir_data[pixel.y(), pixel.x()]
             ndvi = self.calcularNDVI(re_value, ir_value)
             print(ndvi)
             self.lbl_rgb.setText(str(ndvi))
