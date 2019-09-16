@@ -61,7 +61,7 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
             size = pixmap.size()
             widget.setImage(pixmap)
             info.setText("Resolución: " + str(size.width()) + "x" + str(size.height()) + ", Tamaño: " + format_bytes(file_size))
-        return image
+        return fileName
     
     # Función para hacer zoom en las dos imágenes al mismo tiempo
     def wheelEvent(self, event):

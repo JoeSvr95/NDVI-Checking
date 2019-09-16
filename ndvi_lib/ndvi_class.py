@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import os
 
+import data.mongo_setup as mongo_setup
 import services.data_services as svc
 
 from sklearn import datasets, linear_model, metrics
@@ -115,6 +116,7 @@ class NDVIViewer(RGBViewer):
     path = None
     ndvi_filename = None
     roi = None
+    filePath = None
 
     def __init__(self, parent):
         super(NDVIViewer, self).__init__(parent)
@@ -237,8 +239,12 @@ class NDVIViewer(RGBViewer):
     # con los valores de los pixeles
     def getListOfPixels(self, roi):
         rows, cols, chan = np.nonzero(roi)
-        nir_data = np.load('IR.npy') # Carga el canal Infrared
-        red_data = np.load('RE.npy') # Carga el canal Near Red
+        fileName = os.path.basename(self.ndvi_filename)
+        fileNum = fileName[3:7]
+        filePath = os.path.dirname(self.ndvi_filename)
+        print(fileName, fileNum, filePath)
+        nir_data = np.load(filePath + '/IR' + fileNum + '.npy') # Carga el canal Infrared
+        red_data = np.load(filePath + '/R' + fileNum + '.npy') # Carga el canal Near Red
         ndvi_pixels = (nir_data - red_data) / (nir_data + red_data)
         return ndvi_pixels[rows, cols].tolist()
 
@@ -290,6 +296,24 @@ class RGB2CHLA(RGBViewer):
 
     def __init__(self, parent):
         super(RGB2CHLA, self).__init__(parent)
+        # Base de datos
+        mongo_setup.global_init()
+        # Obtener datos de x - Valor NDVI
+        tempx = svc.getAllNDVI()
+        # Obtener datos de y - Valor Clorofila Laboratorio y SPAD
+        templab = svc.getAllLAB()
+        tempspad = svc.getAllSPAD()
+        self.X = []
+        # ylab = []
+        self.ySpad = []
+        for i in tempx:
+            for j in i:
+                if j > 0.1:
+                    self.X.append([j])
+                    # ylab.append(templab[tempx.index(i)])
+                    self.ySpad.append(tempspad[tempx.index(i)])
+
+        '''
         self.doc = load_workbook('Dataset.xlsx')
         self.sheets = self.doc.sheetnames
         self.hoja = self.doc[self.sheets[0]]
@@ -297,6 +321,7 @@ class RGB2CHLA(RGBViewer):
 
         self.X, self.ySpad = self.FromatRows()
         # Entrena con el 75% y predice con el 25% restante
+        '''
         self.lrs, self.xTrain, self.yTrain, self.xTest, self.yTest, self.yPred = train(self.X, self.ySpad, 1, 1)
     
     def FromatRows(self):
@@ -376,7 +401,8 @@ class ValuesDialog(QtWidgets.QDialog, Ui_Dialog):
             spad = float(spad_text)
             lab = float(lab_text)
             self.parent.ROI()
-            svc.create_ndvi(self.parent.ndvi_filename, spad, lab,  self.parent.roi)
+            fileName = os.path.basename(self.parent.ndvi_filename)
+            svc.create_ndvi(fileName, spad, lab, self.parent.roi)
             QMessageBox.information(self, "Información", "Los datos se han guardado exitosamente", QMessageBox.Ok)
             
             # Añadiendo label en la selección

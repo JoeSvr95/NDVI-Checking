@@ -57,48 +57,48 @@ for i in tempx:
             yspad.append(tempspad[tempx.index(i)])
 
 ################ CLOROFILA LABORATORIO ################
-print("\nNDVI:\n", x)
-print("\nLAB:\n", ylab)
+#print("\nNDVI:\n", x)
+#print("\nLAB:\n", ylab)
 
 # Gráfica de los datos
-plt.scatter(x, ylab)
-plt.title('Clorofila Laboratorio')
-plt.xlabel('Valor NDVI')
-plt.ylabel('Valor Clorofila Laboratorio')
-plt.show()
+#plt.scatter(x, ylab)
+#plt.title('Clorofila Laboratorio')
+#plt.xlabel('Valor NDVI')
+#plt.ylabel('Valor Clorofila Laboratorio')
+#plt.show()
 
 # Entrena con el 75% y predice con el 25% restante
-lrs, xTrain, yTrain, xTest, yTest, yPred = train(x, ylab, 1, 0.25)
+#lrs, xTrain, yTrain, xTest, yTest, yPred = train(x, ylab, 1, 0.25)
 
-print('\nPREDICCIÓN CLOROFILA LABORATORIO')
-print('\nDatos de NDVI:\n', xTest)
-print('\nDatos de Valor de Clorofila Laboratorio reales:\n', yTest)
-print('\nDatos de Valor de Clorofila Laboratorio predichos:\n', yPred)
+#print('\nPREDICCIÓN CLOROFILA LABORATORIO')
+#print('\nDatos de NDVI:\n', xTest)
+#print('\nDatos de Valor de Clorofila Laboratorio reales:\n', yTest)
+#print('\nDatos de Valor de Clorofila Laboratorio predichos:\n', yPred)
 
 # Gráfica de los datos con la regresión lineal simple
-plt.scatter(xTest, yTest)
-plt.plot(xTest, yPred, color='red')
-plt.title('Clorofila Laboratorio - Regresión Lineal Simple')
-plt.xlabel('Valor NDVI')
-plt.ylabel('Valor Clorofila Laboratorio')
-plt.show()
+#plt.scatter(xTest, yTest)
+#plt.plot(xTest, yPred, color='red')
+#plt.xlabel('Valor NDVI')
+#plt.title('Clorofila Laboratorio - Regresión Lineal Simple')
+#plt.ylabel('Valor Clorofila Laboratorio')
+#plt.show()
 
-print('\nPendiente (a): ', lrs.coef_)
-print('Intersección (b): ', lrs.intercept_)
-print('Ecuación (y = ax + b): ', 'y = ', lrs.coef_, 'x ', lrs.intercept_)
-print('Precisión del modelo: ', lrs.score(xTrain, yTrain))
+#print('\nPendiente (a): ', lrs.coef_)
+#print('Intersección (b): ', lrs.intercept_)
+#print('Ecuación (y = ax + b): ', 'y = ', lrs.coef_, 'x ', lrs.intercept_)
+#print('Precisión del modelo: ', lrs.score(xTrain, yTrain))
 
 
 ################ CLOROFILA SPAD ################
-print("\nNDVI:\n", x)
-print("\nSPAD:\n", yspad)
+#print("\nNDVI:\n", x)
+#print("\nSPAD:\n", yspad)
 
 # Gráfica de los datos
-plt.scatter(x, yspad)
-plt.title('Clorofila SPAD')
-plt.xlabel('Valor NDVI')
-plt.ylabel('Valor Clorofila SPAD')
-plt.show()
+#plt.scatter(x, yspad)
+#plt.title('Clorofila SPAD')
+#plt.xlabel('Valor NDVI')
+#plt.ylabel('Valor Clorofila SPAD')
+#plt.show()
 
 # Entrena con el 75% y predice con el 25% restante
 lrs, xTrain, yTrain, xTest, yTest, yPred = train(x, yspad, 1, 0.25)
@@ -109,12 +109,12 @@ print('\nDatos de Valor de Clorofila SPAD reales:\n', yTest)
 print('\nDatos de Valor de Clorofila SPAD predichos:\n', yPred)
 
 # Gráfica de los datos con la regresión lineal simple
-plt.scatter(xTest, yTest)
-plt.plot(xTest, yPred, color='red')
-plt.title('Clorofila SPAD - Regresión Lineal Simple')
-plt.xlabel('Valor NDVI')
-plt.ylabel('Valor Clorofila SPAD')
-plt.show()
+#plt.scatter(xTest, yTest)
+#plt.plot(xTest, yPred, color='red')
+#plt.title('Clorofila SPAD - Regresión Lineal Simple')
+#plt.xlabel('Valor NDVI')
+#plt.ylabel('Valor Clorofila SPAD')
+#plt.show()
 
 print('\nPendiente (a): ', lrs.coef_)
 print('Intersección (b): ', lrs.intercept_)
