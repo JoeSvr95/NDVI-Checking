@@ -44,11 +44,13 @@ class MainNDVI(Ui_MainWindow, QMainWindow):
     
     # Método para colocar una imagen en el widget de NDVI
     def loadNDVIImage(self):
+        self.ndvi_view.clearScene()
         ndvi_image = self.loadImage(self.ndvi_view, self.ndvi_info)
         self.ndvi_view.ndvi_filename = ndvi_image
 
         # Añadiendo el nombre del archivo al título de la ventana
-        self.setWindowTitle(self.windowTitle() + " - " + ndvi_image) 
+        self.setWindowTitle("")
+        self.setWindowTitle("NDVI Labeling" + " - " + ndvi_image) 
         self.selectBtn.setEnabled(True)
 
     # Método para cargar una imágen a un widget y colocar información

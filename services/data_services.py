@@ -24,3 +24,7 @@ def getAllNDVI():
 
 def getAllSPAD():
     return list(Label.objects().all().values_list('SPAD'))
+
+def getNDVIbyFile(fileName):
+    label = Label.objects.get(name=fileName) 
+    return label.NDVI

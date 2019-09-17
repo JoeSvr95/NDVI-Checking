@@ -7,7 +7,7 @@ import services.data_services as svc
 
 from sklearn import datasets, linear_model, metrics
 from sklearn.model_selection import train_test_split
-from openpyxl import load_workbook
+#from openpyxl import load_workbook
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint, Qt, QLineF, pyqtSlot, QPointF, QFileInfo
@@ -183,6 +183,15 @@ class NDVIViewer(RGBViewer):
         self.item = GraphicPathItem()
         self.scene().addItem(self.item)
 
+    # Borra todos los items de la escena
+    def clearScene(self):
+        self._scene.clear()
+        self.image = QtWidgets.QGraphicsPixmapItem()
+        self.path = QPainterPath()
+        self.item = GraphicPathItem()
+        self.scene().addItem(self.image)
+        self.scene().addItem(self.item)
+
     # Función para convertir la escenea del QGraphicsView a una imagen RGB
     def getSceneImage(self):
         # Obteniendo un objeto QImage de la escena
@@ -233,14 +242,14 @@ class NDVIViewer(RGBViewer):
         pixels = cv2.bitwise_and(img, img, mask=mask)
         x,y,w,h = cv2.boundingRect(mask)
 
-        return pixels[y:y+h, x:x+w]
+        return pixels
 
     # Función que toma la región de interes y devuelve una lista
     # con los valores de los pixeles
     def getListOfPixels(self, roi):
         rows, cols, chan = np.nonzero(roi)
         fileName = os.path.basename(self.ndvi_filename)
-        fileNum = fileName[3:7]
+        fileNum = fileName[4:8]
         filePath = os.path.dirname(self.ndvi_filename)
         print(fileName, fileNum, filePath)
         nir_data = np.load(filePath + '/IR' + fileNum + '.npy') # Carga el canal Infrared
@@ -289,8 +298,8 @@ class RGB2CHLA(RGBViewer):
     xTest = None 
     yTest = None 
     yPred = None
-    re_data = np.load('R.npy')
-    ir_data = np.load('IR.npy')
+    re_data = None
+    ir_data = None
     xmin = 0
     xmax = 0
 
@@ -372,7 +381,6 @@ class RGB2CHLA(RGBViewer):
         fileName = QFileInfo(self.RGBImage).fileName()
         fileNum = fileName[3:7]
         filePath = os.path.dirname(self.RGBImage)
-        print(filePath + 'RE' + fileNum + '.npy')
         self.re_data = np.load(filePath + '/R' + fileNum + '.npy')
         self.ir_data = np.load(filePath + '/IR' + fileNum + '.npy')
         super(RGB2CHLA, self).setImage(pixmap)
