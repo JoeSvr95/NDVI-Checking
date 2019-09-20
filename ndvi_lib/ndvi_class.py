@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os
+from statistics import mean
 
 import data.mongo_setup as mongo_setup
 import services.data_services as svc
@@ -249,13 +250,15 @@ class NDVIViewer(RGBViewer):
     def getListOfPixels(self, roi):
         rows, cols, chan = np.nonzero(roi)
         fileName = os.path.basename(self.ndvi_filename)
+        #fileNum = fileName[7:11]
         fileNum = fileName[4:8]
         filePath = os.path.dirname(self.ndvi_filename)
         print(fileName, fileNum, filePath)
         nir_data = np.load(filePath + '/IR' + fileNum + '.npy') # Carga el canal Infrared
         red_data = np.load(filePath + '/R' + fileNum + '.npy') # Carga el canal Near Red
         ndvi_pixels = (nir_data - red_data) / (nir_data + red_data)
-        return ndvi_pixels[rows, cols].tolist()
+        list_of_pixels = ndvi_pixels[rows, cols].tolist()
+        return mean(list_of_pixels)
 
     # Función para poder procesar la imagen y obtener los pixeles del ROI
     def ROI(self):

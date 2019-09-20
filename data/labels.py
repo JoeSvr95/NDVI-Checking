@@ -5,7 +5,7 @@ from data.pixels import Pixels
 class Label(mongoengine.Document):
     name = mongoengine.StringField(required=True)
     extension = mongoengine.StringField(required=True)
-    NDVI = mongoengine.ListField()
+    NDVI = mongoengine.FloatField()
     SPAD = mongoengine.FloatField()
     LAB = mongoengine.FloatField()
 
